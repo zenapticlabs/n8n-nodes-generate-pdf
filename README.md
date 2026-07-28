@@ -1,5 +1,9 @@
 # n8n-nodes-generate-pdf
 
+[![npm version](https://img.shields.io/npm/v/n8n-nodes-generate-pdf?logo=npm&color=cb3837)](https://www.npmjs.com/package/n8n-nodes-generate-pdf)
+[![npm downloads](https://img.shields.io/npm/dw/n8n-nodes-generate-pdf?logo=npm&color=cb3837)](https://www.npmjs.com/package/n8n-nodes-generate-pdf)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
+
 Generate branded **PDF** and **PNG** documents from an n8n workflow — invoices,
 quotes, reports, certificates, packing slips — powered by [pdfmill](https://pdfmill.dev).
 Workflow data in, finished document out. No Chrome to host.
@@ -8,11 +12,6 @@ This is a community node for [n8n](https://n8n.io). It is a **thin client** over
 the pdfmill render engine: it does not render anything itself, it calls the API
 and hands you the document as a binary that flows straight into Gmail, Google
 Drive, Slack, S3, or anywhere else.
-
-> **Status: not yet published.** Publishing to npm and submission to the n8n
-> community/gallery is **M5**. This package is verification-ready (passes the
-> n8n community linter) and installable from source today; the install steps
-> below apply once it is published.
 
 ## Install
 
