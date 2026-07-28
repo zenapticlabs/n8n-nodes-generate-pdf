@@ -1,0 +1,68 @@
+{
+  "name": "n8n-nodes-generate-pdf",
+  "version": "0.1.1",
+  "description": "n8n community node to generate branded PDF and PNG documents from a template or raw HTML via pdfmill — workflow data in, finished document out. No Chrome to host.",
+  "keywords": [
+    "n8n-community-node-package",
+    "n8n",
+    "pdf",
+    "generate-pdf",
+    "html-to-pdf",
+    "invoice",
+    "document",
+    "pdfmill"
+  ],
+  "license": "MIT",
+  "homepage": "https://pdfmill.dev",
+  "author": {
+    "name": "pdfmill"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zenapticlabs/n8n-nodes-generate-pdf.git"
+  },
+  "engines": {
+    "node": ">=20.15"
+  },
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.json && gulp build:icons",
+    "dev": "tsc -p tsconfig.json --watch",
+    "typecheck": "tsc --noEmit -p tsconfig.test.json",
+    "lint": "eslint nodes credentials package.json",
+    "lint:fix": "eslint nodes credentials package.json --fix",
+    "lint:prepublish": "eslint nodes credentials package.json --config .eslintrc.prepublish.js",
+    "format": "prettier nodes credentials --write",
+    "test": "vitest run",
+    "prepublishOnly": "npm run build"
+  },
+  "files": [
+    "dist"
+  ],
+  "n8n": {
+    "n8nNodesApiVersion": 1,
+    "credentials": [
+      "dist/credentials/PdfmillApi.credentials.js"
+    ],
+    "nodes": [
+      "dist/nodes/GeneratePdf/GeneratePdf.node.js"
+    ]
+  },
+  "peerDependencies": {
+    "n8n-workflow": "*"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.1",
+    "@typescript-eslint/parser": "^8.35.0",
+    "eslint": "^8.57.0",
+    "eslint-plugin-n8n-nodes-base": "^1.16.7",
+    "gulp": "^5.0.0",
+    "n8n-workflow": "~2.16.0",
+    "prettier": "^3.5.3",
+    "typescript": "~5.9.3",
+    "vitest": "^4.1.10"
+  },
+  "bugs": {
+    "url": "https://github.com/zenapticlabs/n8n-nodes-generate-pdf/issues"
+  }
+}

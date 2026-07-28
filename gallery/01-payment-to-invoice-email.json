@@ -1,0 +1,170 @@
+{
+  "name": "pdfmill — Payment to invoice PDF, emailed",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "00-c5f7c4fa-5264-42d6-922c-839963fd6588",
+      "name": "When clicking 'Execute workflow'",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "{\n  \"invoiceNumber\": \"INV-2026-0042\",\n  \"issuedAt\": \"2026-07-15\",\n  \"dueAt\": \"2026-08-14\",\n  \"paymentTerms\": \"Net 30\",\n  \"currency\": \"USD\",\n  \"from\": {\n    \"name\": \"Fieldstone Automation LLC\",\n    \"address\": \"2211 Alder Street, Suite 4\\nPortland, OR 97205, USA\",\n    \"email\": \"billing@fieldstone-automation.com\",\n    \"taxId\": \"US 84-2210417\"\n  },\n  \"billTo\": {\n    \"name\": \"Harbor & Lane Coffee Roasters\",\n    \"address\": \"18 Dockside Avenue\\nSeattle, WA 98101, USA\",\n    \"email\": \"accounts@harborandlane.com\"\n  },\n  \"items\": [\n    {\n      \"description\": \"n8n workflow build — order-to-invoice automation (discovery, build, handover)\",\n      \"quantity\": 1,\n      \"unitPrice\": 2400,\n      \"lineTotal\": 2400\n    },\n    {\n      \"description\": \"Custom PDF template design (invoice + packing slip, brand-matched)\",\n      \"quantity\": 2,\n      \"unitPrice\": 350,\n      \"lineTotal\": 700\n    },\n    {\n      \"description\": \"Monthly automation support retainer — July 2026\",\n      \"quantity\": 1,\n      \"unitPrice\": 480,\n      \"lineTotal\": 480\n    }\n  ],\n  \"subtotal\": 3580,\n  \"taxRate\": 8.5,\n  \"taxAmount\": 304.3,\n  \"total\": 3884.3,\n  \"notes\": \"Payment by ACH to the account on file. Please reference INV-2026-0042. Thank you for your business.\"\n}",
+        "options": {}
+      },
+      "id": "01-64cedda2-0ba7-4045-ae9b-10d107964a2f",
+      "name": "Invoice data (sample)",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        220,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "template",
+        "template": "invoice",
+        "data": "={{ $json }}",
+        "format": "pdf",
+        "binaryPropertyName": "data",
+        "options": {}
+      },
+      "id": "02-fceb10ac-a2d1-4004-935d-79920c953a81",
+      "name": "Generate invoice PDF",
+      "type": "n8n-nodes-generate-pdf.generatePdf",
+      "typeVersion": 1,
+      "position": [
+        440,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.billTo.email }}",
+        "subject": "=Invoice {{ $json.invoiceNumber }}",
+        "message": "=Hi {{ $json.billTo.name }},\n\nPlease find invoice {{ $json.invoiceNumber }} attached ({{ $json.total }} {{ $json.currency }} due {{ $json.dueAt }}).\n\nThank you!",
+        "options": {
+          "attachmentsUi": {
+            "attachmentsBinary": [
+              {
+                "property": "data"
+              }
+            ]
+          }
+        }
+      },
+      "id": "03-716c3198-3eea-4187-8219-6bd46bd8781d",
+      "name": "Email the invoice",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        660,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## 💳 Payment → Invoice PDF → Email\nWhen a customer pays, generate a branded PDF invoice and email it — no Chrome to host.\n\n**Setup:** add a **pdfmill** credential to the Generate node, and a **Gmail** (or SMTP) credential to the email node.",
+        "height": 200,
+        "width": 560,
+        "color": 5
+      },
+      "id": "04-3ca9cd57-7cab-416f-8dd0-3d8f80913c03",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        40
+      ]
+    },
+    {
+      "parameters": {
+        "content": "### In production\nSwap the manual trigger for a **Stripe Trigger** (event `checkout.session.completed`) or a webhook, then map the payment fields into the invoice data.",
+        "height": 200,
+        "width": 300,
+        "color": 4
+      },
+      "id": "05-0f95e274-a43e-470e-84a8-87f6c5cb3299",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        220,
+        520
+      ]
+    },
+    {
+      "parameters": {
+        "content": "### The document\nThe PDF comes out on the **`data`** binary property and is attached to the email. Switch **Format** to PNG for an image instead.",
+        "height": 200,
+        "width": 300,
+        "color": 4
+      },
+      "id": "06-c8d683bc-24f9-44b2-adc5-d4c1f3001918",
+      "name": "Sticky Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        440,
+        520
+      ]
+    }
+  ],
+  "connections": {
+    "When clicking 'Execute workflow'": {
+      "main": [
+        [
+          {
+            "node": "Invoice data (sample)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Invoice data (sample)": {
+      "main": [
+        [
+          {
+            "node": "Generate invoice PDF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate invoice PDF": {
+      "main": [
+        [
+          {
+            "node": "Email the invoice",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": [
+    {
+      "name": "pdfmill"
+    }
+  ],
+  "versionId": "0c1d8e7c-6a84-466f-a1da-b32c7f25baf7"
+}

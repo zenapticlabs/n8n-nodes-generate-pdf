@@ -1,0 +1,166 @@
+{
+  "name": "pdfmill — Scheduled weekly report PDF, emailed",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtDay": [
+                1
+              ],
+              "triggerAtHour": 8
+            }
+          ]
+        }
+      },
+      "id": "19-4a5329d0-b193-4dc1-8ae2-d52f01e5f155",
+      "name": "Every Monday 8am",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "{\n  \"kicker\": \"Monthly operations report\",\n  \"title\": \"Fulfillment Performance — July 2026\",\n  \"subtitle\": \"Order processing, shipping SLAs and automation coverage across all channels\",\n  \"periodStart\": \"2026-07-01\",\n  \"periodEnd\": \"2026-07-31\",\n  \"generatedAt\": \"2026-08-01\",\n  \"author\": \"Operations Automation Bot\",\n  \"summary\": \"July processed 4,812 orders with a 99.2% on-time dispatch rate. Automation now covers 87% of order flows end to end; the two remaining manual flows (B2B bulk and gift wrapping) are scheduled for August. Carrier exceptions fell 31% after the address-validation step was added to the intake workflow.\",\n  \"kpis\": [\n    {\n      \"label\": \"Orders processed\",\n      \"value\": \"4,812\",\n      \"delta\": \"+9.4%\"\n    },\n    {\n      \"label\": \"On-time dispatch\",\n      \"value\": \"99.2%\",\n      \"delta\": \"+0.6 pt\"\n    },\n    {\n      \"label\": \"Automation coverage\",\n      \"value\": \"87%\",\n      \"delta\": \"+5 pt\"\n    },\n    {\n      \"label\": \"Carrier exceptions\",\n      \"value\": \"142\",\n      \"delta\": \"−31%\",\n      \"down\": false\n    }\n  ],\n  \"sections\": [\n    {\n      \"heading\": \"Order intake\",\n      \"body\": \"Intake volume peaked in week 3 (1,401 orders) driven by the mid-summer promotion. The n8n intake workflow held p95 processing latency under 40 seconds throughout, including PDF confirmation generation and warehouse notification. No manual interventions were required for standard flows.\"\n    },\n    {\n      \"heading\": \"Shipping and carriers\",\n      \"body\": \"DHL handled 61% of shipments, UPS 27%, regional couriers 12%. The new address-validation step rejected 87 malformed addresses before label purchase, saving an estimated €610 in return fees. Two carrier API outages (July 9, July 22) were absorbed by the retry queue with zero lost shipments.\"\n    },\n    {\n      \"heading\": \"Exceptions and follow-ups\",\n      \"body\": \"142 carrier exceptions were raised, of which 129 auto-resolved through the exception workflow. The remaining 13 required human contact with the carrier. August focus: automate the B2B bulk flow and extend the exception workflow to regional couriers.\"\n    }\n  ],\n  \"table\": {\n    \"caption\": \"Key metrics vs June 2026\",\n    \"rows\": [\n      {\n        \"label\": \"Orders processed\",\n        \"current\": \"4,812\",\n        \"previous\": \"4,399\",\n        \"change\": \"+9.4%\",\n        \"direction\": \"up\"\n      },\n      {\n        \"label\": \"On-time dispatch rate\",\n        \"current\": \"99.2%\",\n        \"previous\": \"98.6%\",\n        \"change\": \"+0.6 pt\",\n        \"direction\": \"up\"\n      },\n      {\n        \"label\": \"Avg. dispatch time\",\n        \"current\": \"3.1 h\",\n        \"previous\": \"3.8 h\",\n        \"change\": \"−18%\",\n        \"direction\": \"up\"\n      },\n      {\n        \"label\": \"Carrier exceptions\",\n        \"current\": \"142\",\n        \"previous\": \"206\",\n        \"change\": \"−31%\",\n        \"direction\": \"up\"\n      },\n      {\n        \"label\": \"Manual interventions\",\n        \"current\": \"13\",\n        \"previous\": \"41\",\n        \"change\": \"−68%\",\n        \"direction\": \"up\"\n      },\n      {\n        \"label\": \"Return rate\",\n        \"current\": \"2.4%\",\n        \"previous\": \"2.2%\",\n        \"change\": \"+0.2 pt\",\n        \"direction\": \"down\"\n      }\n    ]\n  }\n}",
+        "options": {}
+      },
+      "id": "20-86942443-922a-4523-b4e0-dc9f210b760c",
+      "name": "Weekly metrics (sample)",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        220,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "template",
+        "template": "report",
+        "data": "={{ $json }}",
+        "format": "pdf",
+        "binaryPropertyName": "data",
+        "options": {}
+      },
+      "id": "21-54f3c27c-c55c-41ec-8006-0c21801050f9",
+      "name": "Generate weekly report PDF",
+      "type": "n8n-nodes-generate-pdf.generatePdf",
+      "typeVersion": 1,
+      "position": [
+        440,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "sendTo": "team@example.com",
+        "subject": "=Weekly report — {{ $json.periodStart }} to {{ $json.periodEnd }}",
+        "message": "=Hi team,\n\nThis week’s report is attached.\n\n— Automated by n8n + pdfmill",
+        "options": {
+          "attachmentsUi": {
+            "attachmentsBinary": [
+              {
+                "property": "data"
+              }
+            ]
+          }
+        }
+      },
+      "id": "22-81984581-b085-42f2-b8d9-334d7a32faa9",
+      "name": "Email the report",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        660,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## 📈 Scheduled → Report PDF → Email\nOn a schedule, gather your metrics, render a PDF summary, and email it to the team.\n\n**Setup:** a **pdfmill** credential on the Generate node and a **Gmail**/SMTP credential on the email node.",
+        "height": 200,
+        "width": 560,
+        "color": 5
+      },
+      "id": "23-857db774-74c2-43a2-9853-563892f353e4",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        40
+      ]
+    },
+    {
+      "parameters": {
+        "content": "### In production\nReplace the sample-data node with your real sources (HTTP Request, Postgres, Sheets…) mapped into the report’s KPIs, sections and table.",
+        "height": 200,
+        "width": 300,
+        "color": 4
+      },
+      "id": "24-b563c35b-99e1-421a-a45d-9d071239dc66",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        220,
+        520
+      ]
+    }
+  ],
+  "connections": {
+    "Every Monday 8am": {
+      "main": [
+        [
+          {
+            "node": "Weekly metrics (sample)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Weekly metrics (sample)": {
+      "main": [
+        [
+          {
+            "node": "Generate weekly report PDF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate weekly report PDF": {
+      "main": [
+        [
+          {
+            "node": "Email the report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": [
+    {
+      "name": "pdfmill"
+    }
+  ],
+  "versionId": "72ce3bd3-0be3-45cd-bcd8-f900ed5fb0de"
+}

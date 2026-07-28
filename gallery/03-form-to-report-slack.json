@@ -1,0 +1,153 @@
+{
+  "name": "pdfmill — Form to report PDF, posted to Slack",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "13-c776027f-25b6-4153-837d-c31bb6092299",
+      "name": "When clicking 'Execute workflow'",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "{\n  \"kicker\": \"Monthly operations report\",\n  \"title\": \"Fulfillment Performance — July 2026\",\n  \"subtitle\": \"Order processing, shipping SLAs and automation coverage across all channels\",\n  \"periodStart\": \"2026-07-01\",\n  \"periodEnd\": \"2026-07-31\",\n  \"generatedAt\": \"2026-08-01\",\n  \"author\": \"Operations Automation Bot\",\n  \"summary\": \"July processed 4,812 orders with a 99.2% on-time dispatch rate. Automation now covers 87% of order flows end to end; the two remaining manual flows (B2B bulk and gift wrapping) are scheduled for August. Carrier exceptions fell 31% after the address-validation step was added to the intake workflow.\",\n  \"kpis\": [\n    {\n      \"label\": \"Orders processed\",\n      \"value\": \"4,812\",\n      \"delta\": \"+9.4%\"\n    },\n    {\n      \"label\": \"On-time dispatch\",\n      \"value\": \"99.2%\",\n      \"delta\": \"+0.6 pt\"\n    },\n    {\n      \"label\": \"Automation coverage\",\n      \"value\": \"87%\",\n      \"delta\": \"+5 pt\"\n    },\n    {\n      \"label\": \"Carrier exceptions\",\n      \"value\": \"142\",\n      \"delta\": \"−31%\",\n      \"down\": false\n    }\n  ],\n  \"sections\": [\n    {\n      \"heading\": \"Order intake\",\n      \"body\": \"Intake volume peaked in week 3 (1,401 orders) driven by the mid-summer promotion. The n8n intake workflow held p95 processing latency under 40 seconds throughout, including PDF confirmation generation and warehouse notification. No manual interventions were required for standard flows.\"\n    },\n    {\n      \"heading\": \"Shipping and carriers\",\n      \"body\": \"DHL handled 61% of shipments, UPS 27%, regional couriers 12%. The new address-validation step rejected 87 malformed addresses before label purchase, saving an estimated €610 in return fees. Two carrier API outages (July 9, July 22) were absorbed by the retry queue with zero lost shipments.\"\n    },\n    {\n      \"heading\": \"Exceptions and follow-ups\",\n      \"body\": \"142 carrier exceptions were raised, of which 129 auto-resolved through the exception workflow. The remaining 13 required human contact with the carrier. August focus: automate the B2B bulk flow and extend the exception workflow to regional couriers.\"\n    }\n  ],\n  \"table\": {\n    \"caption\": \"Key metrics vs June 2026\",\n    \"rows\": [\n      {\n        \"label\": \"Orders processed\",\n        \"current\": \"4,812\",\n        \"previous\": \"4,399\",\n        \"change\": \"+9.4%\",\n        \"direction\": \"up\"\n      },\n      {\n        \"label\": \"On-time dispatch rate\",\n        \"current\": \"99.2%\",\n        \"previous\": \"98.6%\",\n        \"change\": \"+0.6 pt\",\n        \"direction\": \"up\"\n      },\n      {\n        \"label\": \"Avg. dispatch time\",\n        \"current\": \"3.1 h\",\n        \"previous\": \"3.8 h\",\n        \"change\": \"−18%\",\n        \"direction\": \"up\"\n      },\n      {\n        \"label\": \"Carrier exceptions\",\n        \"current\": \"142\",\n        \"previous\": \"206\",\n        \"change\": \"−31%\",\n        \"direction\": \"up\"\n      },\n      {\n        \"label\": \"Manual interventions\",\n        \"current\": \"13\",\n        \"previous\": \"41\",\n        \"change\": \"−68%\",\n        \"direction\": \"up\"\n      },\n      {\n        \"label\": \"Return rate\",\n        \"current\": \"2.4%\",\n        \"previous\": \"2.2%\",\n        \"change\": \"+0.2 pt\",\n        \"direction\": \"down\"\n      }\n    ]\n  }\n}",
+        "options": {}
+      },
+      "id": "14-40049ae8-4fc3-4ce4-9384-9dba930818e7",
+      "name": "Form submission (sample)",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        220,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "template",
+        "template": "report",
+        "data": "={{ $json }}",
+        "format": "pdf",
+        "binaryPropertyName": "data",
+        "options": {}
+      },
+      "id": "15-78fe9b28-edb7-4802-8837-b374e614002b",
+      "name": "Generate report PDF",
+      "type": "n8n-nodes-generate-pdf.generatePdf",
+      "typeVersion": 1,
+      "position": [
+        440,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "upload",
+        "binaryPropertyName": "data",
+        "options": {
+          "fileName": "=Report - {{ $json.title }}.pdf"
+        },
+        "channelId": {
+          "__rl": true,
+          "mode": "name",
+          "value": "#reports"
+        }
+      },
+      "id": "16-7ead2163-c10e-40aa-ac0b-c88a70ff6e71",
+      "name": "Post to Slack",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        660,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## 📝 Form → Report PDF → Slack\nWhen a form/webhook fires, build a formatted PDF report and drop it into a Slack channel.\n\n**Setup:** a **pdfmill** credential on the Generate node and a **Slack** credential on the upload node.",
+        "height": 200,
+        "width": 560,
+        "color": 5
+      },
+      "id": "17-9a22b4b5-9436-4de8-b6bc-0b5873e6009b",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        40
+      ]
+    },
+    {
+      "parameters": {
+        "content": "### In production\nSwap the manual trigger for a **Webhook** or **n8n Form Trigger** and map the submission into the report’s fields, KPIs and table.",
+        "height": 200,
+        "width": 300,
+        "color": 4
+      },
+      "id": "18-8ca7e943-41b7-446b-bfac-eea2d2aa13f0",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        220,
+        520
+      ]
+    }
+  ],
+  "connections": {
+    "When clicking 'Execute workflow'": {
+      "main": [
+        [
+          {
+            "node": "Form submission (sample)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Form submission (sample)": {
+      "main": [
+        [
+          {
+            "node": "Generate report PDF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate report PDF": {
+      "main": [
+        [
+          {
+            "node": "Post to Slack",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": [
+    {
+      "name": "pdfmill"
+    }
+  ],
+  "versionId": "66a2b9d1-3377-44f6-9e14-3ce166405b8d"
+}

@@ -1,0 +1,70 @@
+# Integration testing — the node against a real engine and a real n8n
+
+Two levels of end-to-end proof for SC-003. Level 1 is automated + CI-gated and
+runs here; Level 2 is the full n8n-UI runtime, documented for a human/CI runner
+because a headless sandbox cannot reliably boot n8n (the same honesty pattern as
+the engine's Chromium/Postgres suites).
+
+## Level 1 — node ↔ engine (automated, env-gated) ✅ runs in this repo
+
+`test/integration.engine.test.ts` drives the node's **real** `execute()` and
+`loadOptions` through its **real** `engineClient` against a **running pdfmill
+engine** over HTTP, and asserts real PDF/PNG bytes come back. It is skipped
+unless the engine env is present.
+
+```bash
+# 1. start the engine (env-key mode; real pinned Chrome)
+PDFMILL_API_KEYS=int-key PDFMILL_NO_SANDBOX=1 PDFMILL_SKIP_CHROME_PIN_CHECK=1 \
+  PORT=8099 PDFMILL_HOST=127.0.0.1 pnpm --filter @pdfmill/engine start &
+
+# 2. run the gated integration test against it
+PDFMILL_ENGINE_URL=http://127.0.0.1:8099 PDFMILL_API_KEY=int-key \
+  pnpm --filter n8n-nodes-generate-pdf run test
+```
+
+This proves node → engineClient → HTTP → engine → Chrome → real document, plus
+the live template dropdown. It does **not** exercise the n8n UI runtime.
+
+## Level 2 — inside a real n8n (manual / CI with a service) ⏳ documented
+
+```bash
+# 1. Build + pack the node
+pnpm --filter n8n-nodes-generate-pdf run build
+cd packages/n8n-node && npm pack        # → n8n-nodes-generate-pdf-<v>.tgz
+
+# 2. Start a throwaway n8n and install the node into it
+npx n8n@latest            # first run creates ~/.n8n
+#   In another shell, install the packed tarball into ~/.n8n/nodes:
+cd ~/.n8n/nodes && npm init -y >/dev/null 2>&1 || true
+npm install /abs/path/to/n8n-nodes-generate-pdf-<v>.tgz
+#   Restart n8n so it loads the community node.
+
+# 3. Point pdfmill at your running engine
+#   engine (env-key mode) from the monorepo:
+PDFMILL_API_KEYS=int-key PDFMILL_NO_SANDBOX=1 PORT=8080 pnpm --filter @pdfmill/engine start &
+```
+
+Then in the n8n UI:
+
+1. **Credentials → New → pdfmill API**: API Key `int-key`, Base URL
+   `http://localhost:8080`. Click **Test** → expect success (hits `/v1/templates`).
+2. **Workflows → Import from File** → `gallery/01-payment-to-invoice-email.json`.
+3. Open **Generate invoice PDF**, select the **pdfmill API** credential; confirm
+   the **Template** dropdown lists Invoice/Quote/Report/Certificate/Packing Slip.
+4. **Execute workflow** → the node outputs a **`data`** binary; download it →
+   a valid PDF invoice. Switch **Format** to PNG → a PNG comes back.
+5. Verify errors: set a bad API key → the node fails with **UNAUTHORIZED** + a
+   requestId. Turn on **Continue On Fail** with a 2-item batch (one bad) → the
+   bad item carries `{ error }`, the good one still renders.
+
+### Cloud (n8n Cloud)
+
+Community-node install is a Cloud setting; the credential Base URL must be the
+**public** engine URL (`https://api.pdfmill.dev`). Everything else is identical.
+
+## CI
+
+`.github/workflows/node-ci.yml` runs build + the n8n community linter + the unit
+suite on every PR. Level-1 integration can be wired into CI by starting the
+engine as a step and exporting `PDFMILL_ENGINE_URL` + `PDFMILL_API_KEY` before
+the test step (mirrors the engine CI's Chrome setup).

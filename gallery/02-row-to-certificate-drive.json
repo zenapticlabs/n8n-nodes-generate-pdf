@@ -1,0 +1,156 @@
+{
+  "name": "pdfmill — Sheet row to certificate PDF, saved to Drive",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "07-8ee2ec82-b7ac-4527-8922-e64d422d5600",
+      "name": "When clicking 'Execute workflow'",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "{\n  \"certificateNumber\": \"CERT-2026-00893\",\n  \"organization\": \"Hangang Institute of Automation\",\n  \"recipientName\": \"김민준 (Kim Min-jun)\",\n  \"programName\": \"業務自動化マスターコース — Workflow Automation Master Course\",\n  \"hours\": 40,\n  \"grade\": \"A\",\n  \"completedAt\": \"2026-07-18\",\n  \"issuedAt\": \"2026-07-20\",\n  \"issuerName\": \"박서연 (Park Seo-yeon)\",\n  \"issuerTitle\": \"Program Director\"\n}",
+        "options": {}
+      },
+      "id": "08-e948006e-75d1-4c01-baf9-da52e1717e06",
+      "name": "Roster row (sample)",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        220,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "template",
+        "template": "certificate",
+        "data": "={{ $json }}",
+        "format": "pdf",
+        "binaryPropertyName": "data",
+        "options": {}
+      },
+      "id": "09-0c2f5c5f-5ff3-4e31-ba2a-66d64a8d6a07",
+      "name": "Generate certificate PDF",
+      "type": "n8n-nodes-generate-pdf.generatePdf",
+      "typeVersion": 1,
+      "position": [
+        440,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "upload",
+        "inputDataFieldName": "data",
+        "name": "=Certificate - {{ $json.recipientName }}.pdf",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "root"
+        },
+        "options": {}
+      },
+      "id": "10-755b6b98-7688-40fc-a00b-910846d65de4",
+      "name": "Upload to Google Drive",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        660,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## 🎓 Row → Certificate PDF → Drive\nTurn each row (a course completion, an attendee) into a personalised certificate and file it in Drive.\n\n**Setup:** a **pdfmill** credential on the Generate node and a **Google Drive** credential on the upload node.",
+        "height": 200,
+        "width": 560,
+        "color": 5
+      },
+      "id": "11-6b834c5a-4aa8-46e8-a441-06f7a9e0b03f",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        40
+      ]
+    },
+    {
+      "parameters": {
+        "content": "### In production\nReplace the manual trigger with a **Google Sheets Trigger** (or loop rows) so one certificate is generated per attendee.",
+        "height": 200,
+        "width": 300,
+        "color": 4
+      },
+      "id": "12-7617f676-966c-472d-adec-c430281fd267",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        220,
+        520
+      ]
+    }
+  ],
+  "connections": {
+    "When clicking 'Execute workflow'": {
+      "main": [
+        [
+          {
+            "node": "Roster row (sample)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Roster row (sample)": {
+      "main": [
+        [
+          {
+            "node": "Generate certificate PDF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate certificate PDF": {
+      "main": [
+        [
+          {
+            "node": "Upload to Google Drive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": [
+    {
+      "name": "pdfmill"
+    }
+  ],
+  "versionId": "135b4e37-a6db-47b2-976a-42bc87bea8c1"
+}

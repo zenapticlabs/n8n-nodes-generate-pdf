@@ -1,0 +1,156 @@
+{
+  "name": "pdfmill — New order to packing slip PDF, saved to Drive",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "25-150a80db-e4dd-478c-92d4-d8cbf7b916ba",
+      "name": "When clicking 'Execute workflow'",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "{\n  \"orderNumber\": \"SO-2026-3187\",\n  \"orderedAt\": \"2026-07-19\",\n  \"shippedAt\": \"2026-07-21\",\n  \"carrier\": \"DHL Express\",\n  \"trackingNumber\": \"JD014600003118872291\",\n  \"shipFrom\": {\n    \"name\": \"Nordic Trail Supply AB\",\n    \"address\": \"Industrivägen 8\\n433 61 Sävedalen, Sweden\"\n  },\n  \"shipTo\": {\n    \"name\": \"Ana Popescu\",\n    \"address\": \"Strada Aviatorilor 22, ap. 14\\n011853 Bucharest, Romania\"\n  },\n  \"items\": [\n    {\n      \"sku\": \"NTS-TENT-02\",\n      \"description\": \"Alpine 2-person tent, moss green\",\n      \"quantity\": 1\n    },\n    {\n      \"sku\": \"NTS-STV-11\",\n      \"description\": \"Compact gas stove with piezo ignition\",\n      \"quantity\": 1\n    },\n    {\n      \"sku\": \"NTS-BTL-07\",\n      \"description\": \"Insulated steel bottle 0.75 L\",\n      \"quantity\": 2\n    },\n    {\n      \"sku\": \"NTS-SCK-03\",\n      \"description\": \"Merino hiking socks, size 39-42\",\n      \"quantity\": 3\n    }\n  ],\n  \"totalItems\": 7,\n  \"totalWeight\": \"4.6 kg\",\n  \"notes\": \"Leave with neighbor at ap. 15 if not home. Fragile: stove contains glass ignition parts.\"\n}",
+        "options": {}
+      },
+      "id": "26-f6c2427f-1cb8-4d60-8d42-81a44d6949a6",
+      "name": "Order (sample)",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        220,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "template",
+        "template": "packing-slip",
+        "data": "={{ $json }}",
+        "format": "pdf",
+        "binaryPropertyName": "data",
+        "options": {}
+      },
+      "id": "27-e0278032-ebfd-46be-8b7a-b04701db6d62",
+      "name": "Generate packing slip PDF",
+      "type": "n8n-nodes-generate-pdf.generatePdf",
+      "typeVersion": 1,
+      "position": [
+        440,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "upload",
+        "inputDataFieldName": "data",
+        "name": "=Packing slip - {{ $json.orderNumber }}.pdf",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "root"
+        },
+        "options": {}
+      },
+      "id": "28-6de93dc1-b58c-4f30-903a-b5115966e3dc",
+      "name": "Save to Google Drive",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        660,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## 📦 Order → Packing Slip PDF → Drive\nOn a new order, generate a packing slip PDF and file it (or attach it to the fulfilment task).\n\n**Setup:** a **pdfmill** credential on the Generate node and a **Google Drive** credential on the save node.",
+        "height": 200,
+        "width": 560,
+        "color": 5
+      },
+      "id": "29-197c5571-f02b-4e0a-a640-4004593bf2ef",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        40
+      ]
+    },
+    {
+      "parameters": {
+        "content": "### In production\nReplace the manual trigger with your store’s **order webhook** (Shopify/WooCommerce/etc.) and map the order into the packing-slip fields.",
+        "height": 200,
+        "width": 300,
+        "color": 4
+      },
+      "id": "30-3bb652df-5040-42dd-9004-c9cc20b12a82",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        220,
+        520
+      ]
+    }
+  ],
+  "connections": {
+    "When clicking 'Execute workflow'": {
+      "main": [
+        [
+          {
+            "node": "Order (sample)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Order (sample)": {
+      "main": [
+        [
+          {
+            "node": "Generate packing slip PDF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate packing slip PDF": {
+      "main": [
+        [
+          {
+            "node": "Save to Google Drive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": [
+    {
+      "name": "pdfmill"
+    }
+  ],
+  "versionId": "6d763b0f-b5f4-4329-8398-881c892f702a"
+}
