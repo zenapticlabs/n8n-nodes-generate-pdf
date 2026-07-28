@@ -161,7 +161,7 @@ export class GeneratePdf implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'Generate PDF',
 		name: 'generatePdf',
-		icon: { light: 'file:pdfmill.svg', dark: 'file:pdfmill.svg' },
+		icon: { light: 'file:pdfmill.svg', dark: 'file:pdfmill.dark.svg' },
 		group: ['transform'],
 		version: 1,
 		subtitle: '={{ $parameter["operation"] === "template" ? "From Template" : "From HTML" }}',
