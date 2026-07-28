@@ -1,6 +1,6 @@
 {
   "name": "n8n-nodes-generate-pdf",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "n8n community node to generate branded PDF and PNG documents from a template or raw HTML via pdfmill — workflow data in, finished document out. No Chrome to host.",
   "keywords": [
     "n8n-community-node-package",
@@ -15,7 +15,8 @@
   "license": "MIT",
   "homepage": "https://pdfmill.dev",
   "author": {
-    "name": "pdfmill"
+    "name": "pdfmill",
+    "email": "support@pdfmill.dev"
   },
   "repository": {
     "type": "git",

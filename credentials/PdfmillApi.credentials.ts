@@ -25,7 +25,7 @@ export class PdfmillApi implements ICredentialType {
 
 	documentationUrl = 'https://pdfmill.dev/docs/n8n';
 
-	icon: Icon = 'file:pdfmill.svg';
+	icon: Icon = { light: 'file:pdfmill.svg', dark: 'file:pdfmill.svg' };
 
 	properties: INodeProperties[] = [
 		{

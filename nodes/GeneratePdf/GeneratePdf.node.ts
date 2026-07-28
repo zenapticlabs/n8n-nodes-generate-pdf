@@ -1,5 +1,6 @@
 import {
 	NodeApiError,
+	NodeConnectionTypes,
 	NodeOperationError,
 	type IDataObject,
 	type IExecuteFunctions,
@@ -160,7 +161,7 @@ export class GeneratePdf implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'Generate PDF',
 		name: 'generatePdf',
-		icon: 'file:pdfmill.svg',
+		icon: { light: 'file:pdfmill.svg', dark: 'file:pdfmill.svg' },
 		group: ['transform'],
 		version: 1,
 		subtitle: '={{ $parameter["operation"] === "template" ? "From Template" : "From HTML" }}',
@@ -169,8 +170,8 @@ export class GeneratePdf implements INodeType {
 			name: 'Generate PDF',
 		},
 		usableAsTool: true,
-		inputs: ['main'],
-		outputs: ['main'],
+		inputs: [NodeConnectionTypes.Main],
+		outputs: [NodeConnectionTypes.Main],
 		credentials: [
 			{
 				name: 'pdfmillApi',
