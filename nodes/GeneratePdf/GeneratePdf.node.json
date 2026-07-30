@@ -2,7 +2,7 @@
 	"node": "n8n-nodes-generate-pdf.generatePdf",
 	"nodeVersion": "1.0",
 	"codexVersion": "1.0",
-	"categories": ["Utility", "Marketing"],
+	"categories": ["Utility", "Marketing & Content"],
 	"resources": {
 		"primaryDocumentation": [
 			{
