@@ -1,12 +1,12 @@
 /**
- * Unit tests for the GeneratePdf node happy paths (SC-002, SC-005):
+ * Unit tests for the Pdfmill node happy paths (SC-002, SC-005):
  * both operations, loadOptions, binary output + metadata, format=png, options
  * mapping, and multi-item batches. Engine HTTP is mocked.
  */
 import type { IHttpRequestOptions, INodeExecutionData, INodePropertyOptions } from 'n8n-workflow';
 import { describe, expect, it } from 'vitest';
 
-import { GeneratePdf } from '../nodes/GeneratePdf/GeneratePdf.node';
+import { Pdfmill } from '../nodes/Pdfmill/Pdfmill.node';
 import {
 	FAKE_PDF,
 	FAKE_PNG,
@@ -18,10 +18,10 @@ import {
 } from './helpers';
 
 function runExecute(ctx: import('n8n-workflow').IExecuteFunctions) {
-	return new GeneratePdf().execute.call(ctx) as Promise<INodeExecutionData[][]>;
+	return new Pdfmill().execute.call(ctx) as Promise<INodeExecutionData[][]>;
 }
 
-describe('GeneratePdf.execute — Generate from Template (SC-005 happy path)', () => {
+describe('Pdfmill.execute — Generate from Template (SC-005 happy path)', () => {
 	it('renders the invoice template to a PDF binary + metadata', async () => {
 		const { ctx, httpCalls } = makeExecuteFunctions({
 			items: [{ json: { invoiceNumber: 'INV-1' } }],
@@ -100,7 +100,7 @@ describe('GeneratePdf.execute — Generate from Template (SC-005 happy path)', (
 	});
 });
 
-describe('GeneratePdf.execute — Generate from HTML', () => {
+describe('Pdfmill.execute — Generate from HTML', () => {
 	it('renders raw HTML to a PDF on a custom binary property', async () => {
 		const { ctx, httpCalls } = makeExecuteFunctions({
 			params: {
@@ -122,7 +122,7 @@ describe('GeneratePdf.execute — Generate from HTML', () => {
 	});
 });
 
-describe('GeneratePdf.execute — format=png (SC-002)', () => {
+describe('Pdfmill.execute — format=png (SC-002)', () => {
 	it('returns an image/png binary with a .png filename', async () => {
 		const { ctx } = makeExecuteFunctions({
 			params: { operation: 'template', template: 'certificate', data: {}, format: 'png', binaryPropertyName: 'data' },
@@ -136,7 +136,7 @@ describe('GeneratePdf.execute — format=png (SC-002)', () => {
 	});
 });
 
-describe('GeneratePdf.execute — Options mapping', () => {
+describe('Pdfmill.execute — Options mapping', () => {
 	it('maps only the set options to the engine request + honors a file name override', async () => {
 		const { ctx, httpCalls } = makeExecuteFunctions({
 			params: {
@@ -179,7 +179,7 @@ describe('GeneratePdf.execute — Options mapping', () => {
 	});
 });
 
-describe('GeneratePdf.execute — multi-item batch', () => {
+describe('Pdfmill.execute — multi-item batch', () => {
 	it('renders each input item and preserves pairing', async () => {
 		const { ctx, httpCalls } = makeExecuteFunctions({
 			items: [{ json: { n: 1 } }, { json: { n: 2 } }],
@@ -204,7 +204,7 @@ describe('GeneratePdf.execute — multi-item batch', () => {
 	});
 });
 
-describe('GeneratePdf.methods.loadOptions.getTemplates (FR-004)', () => {
+describe('Pdfmill.methods.loadOptions.getTemplates (FR-004)', () => {
 	it('maps the engine template list to n8n dropdown options', async () => {
 		const { ctx, httpCalls } = makeLoadOptionsFunctions({
 			httpRequest: () =>
@@ -214,7 +214,7 @@ describe('GeneratePdf.methods.loadOptions.getTemplates (FR-004)', () => {
 					{ id: 'packing-slip', name: 'Packing Slip' },
 				]),
 		});
-		const options = (await new GeneratePdf().methods.loadOptions.getTemplates.call(
+		const options = (await new Pdfmill().methods.loadOptions.getTemplates.call(
 			ctx,
 		)) as INodePropertyOptions[];
 		expect(options).toEqual([
@@ -236,6 +236,6 @@ describe('GeneratePdf.methods.loadOptions.getTemplates (FR-004)', () => {
 				body: Buffer.from(JSON.stringify({ error: { code: 'UNAUTHORIZED', message: 'bad key', requestId: 'req_x' } })),
 			}),
 		});
-		await expect(new GeneratePdf().methods.loadOptions.getTemplates.call(ctx)).rejects.toThrow(/UNAUTHORIZED/);
+		await expect(new Pdfmill().methods.loadOptions.getTemplates.call(ctx)).rejects.toThrow(/UNAUTHORIZED/);
 	});
 });

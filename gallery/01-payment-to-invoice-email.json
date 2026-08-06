@@ -38,7 +38,7 @@
       },
       "id": "02-fceb10ac-a2d1-4004-935d-79920c953a81",
       "name": "Generate invoice PDF",
-      "type": "n8n-nodes-generate-pdf.generatePdf",
+      "type": "n8n-nodes-pdfmill.pdfmill",
       "typeVersion": 1,
       "position": [
         440,

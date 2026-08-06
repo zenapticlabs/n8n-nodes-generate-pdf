@@ -38,7 +38,7 @@
       },
       "id": "15-78fe9b28-edb7-4802-8837-b374e614002b",
       "name": "Generate report PDF",
-      "type": "n8n-nodes-generate-pdf.generatePdf",
+      "type": "n8n-nodes-pdfmill.pdfmill",
       "typeVersion": 1,
       "position": [
         440,

@@ -19,8 +19,8 @@ import type {
 
 export const TEST_NODE: INode = {
 	id: 'test-node',
-	name: 'Generate PDF',
-	type: 'n8n-nodes-generate-pdf.generatePdf',
+	name: 'PDFmill',
+	type: 'n8n-nodes-pdfmill.pdfmill',
 	typeVersion: 1,
 	position: [0, 0],
 	parameters: {},

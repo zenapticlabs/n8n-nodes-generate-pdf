@@ -1,6 +1,6 @@
 {
-  "name": "n8n-nodes-generate-pdf",
-  "version": "0.1.5",
+  "name": "n8n-nodes-pdfmill",
+  "version": "0.2.0",
   "description": "n8n community node to generate branded PDF and PNG documents from a template or raw HTML via pdfmill — workflow data in, finished document out. No Chrome to host.",
   "keywords": [
     "n8n-community-node-package",
@@ -20,7 +20,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/zenapticlabs/n8n-nodes-generate-pdf.git"
+    "url": "git+https://github.com/zenapticlabs/n8n-nodes-pdfmill.git"
   },
   "engines": {
     "node": ">=20.15"
@@ -46,7 +46,7 @@
       "dist/credentials/PdfmillApi.credentials.js"
     ],
     "nodes": [
-      "dist/nodes/GeneratePdf/GeneratePdf.node.js"
+      "dist/nodes/Pdfmill/Pdfmill.node.js"
     ]
   },
   "peerDependencies": {
@@ -64,6 +64,6 @@
     "vitest": "^4.1.10"
   },
   "bugs": {
-    "url": "https://github.com/zenapticlabs/n8n-nodes-generate-pdf/issues"
+    "url": "https://github.com/zenapticlabs/n8n-nodes-pdfmill/issues"
   }
 }

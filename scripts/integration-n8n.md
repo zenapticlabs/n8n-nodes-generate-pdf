@@ -19,7 +19,7 @@ PDFMILL_API_KEYS=int-key PDFMILL_NO_SANDBOX=1 PDFMILL_SKIP_CHROME_PIN_CHECK=1 \
 
 # 2. run the gated integration test against it
 PDFMILL_ENGINE_URL=http://127.0.0.1:8099 PDFMILL_API_KEY=int-key \
-  pnpm --filter n8n-nodes-generate-pdf run test
+  pnpm --filter n8n-nodes-pdfmill run test
 ```
 
 This proves node → engineClient → HTTP → engine → Chrome → real document, plus
@@ -29,14 +29,14 @@ the live template dropdown. It does **not** exercise the n8n UI runtime.
 
 ```bash
 # 1. Build + pack the node
-pnpm --filter n8n-nodes-generate-pdf run build
-cd packages/n8n-node && npm pack        # → n8n-nodes-generate-pdf-<v>.tgz
+pnpm --filter n8n-nodes-pdfmill run build
+cd packages/n8n-node && npm pack        # → n8n-nodes-pdfmill-<v>.tgz
 
 # 2. Start a throwaway n8n and install the node into it
 npx n8n@latest            # first run creates ~/.n8n
 #   In another shell, install the packed tarball into ~/.n8n/nodes:
 cd ~/.n8n/nodes && npm init -y >/dev/null 2>&1 || true
-npm install /abs/path/to/n8n-nodes-generate-pdf-<v>.tgz
+npm install /abs/path/to/n8n-nodes-pdfmill-<v>.tgz
 #   Restart n8n so it loads the community node.
 
 # 3. Point pdfmill at your running engine

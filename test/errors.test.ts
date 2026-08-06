@@ -7,7 +7,7 @@
 import { NodeApiError, NodeOperationError, type IExecuteFunctions, type INodeExecutionData } from 'n8n-workflow';
 import { describe, expect, it } from 'vitest';
 
-import { GeneratePdf } from '../nodes/GeneratePdf/GeneratePdf.node';
+import { Pdfmill } from '../nodes/Pdfmill/Pdfmill.node';
 import {
 	FAKE_PDF,
 	decodeBinary,
@@ -17,7 +17,7 @@ import {
 } from './helpers';
 
 function runExecute(ctx: IExecuteFunctions) {
-	return new GeneratePdf().execute.call(ctx) as Promise<INodeExecutionData[][]>;
+	return new Pdfmill().execute.call(ctx) as Promise<INodeExecutionData[][]>;
 }
 
 async function capture(ctx: IExecuteFunctions): Promise<unknown> {

@@ -50,7 +50,7 @@
       },
       "id": "21-54f3c27c-c55c-41ec-8006-0c21801050f9",
       "name": "Generate weekly report PDF",
-      "type": "n8n-nodes-generate-pdf.generatePdf",
+      "type": "n8n-nodes-pdfmill.pdfmill",
       "typeVersion": 1,
       "position": [
         440,

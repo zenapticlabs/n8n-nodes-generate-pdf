@@ -25,7 +25,7 @@ import type {
 } from 'n8n-workflow';
 import { describe, expect, it } from 'vitest';
 
-import { GeneratePdf } from '../nodes/GeneratePdf/GeneratePdf.node';
+import { Pdfmill } from '../nodes/Pdfmill/Pdfmill.node';
 
 const ENGINE_URL = process.env.PDFMILL_ENGINE_URL;
 const API_KEY = process.env.PDFMILL_API_KEY;
@@ -42,8 +42,8 @@ const suite = RUN ? describe : describe.skip;
 
 const TEST_NODE: INode = {
 	id: 'int',
-	name: 'Generate PDF',
-	type: 'n8n-nodes-generate-pdf.generatePdf',
+	name: 'PDFmill',
+	type: 'n8n-nodes-pdfmill.pdfmill',
 	typeVersion: 1,
 	position: [0, 0],
 	parameters: {},
@@ -114,7 +114,7 @@ suite('node ↔ engine integration [requires PDFMILL_ENGINE_URL + PDFMILL_API_KE
 			binaryPropertyName: 'data',
 			options: {},
 		});
-		const [out] = (await new GeneratePdf().execute.call(ctx)) as INodeExecutionData[][];
+		const [out] = (await new Pdfmill().execute.call(ctx)) as INodeExecutionData[][];
 		expect(out).toHaveLength(1);
 		expect(out[0].json).toMatchObject({ success: true, template: 'invoice', format: 'pdf' });
 		expect(Number(out[0].json.pages)).toBeGreaterThanOrEqual(1);
@@ -135,13 +135,13 @@ suite('node ↔ engine integration [requires PDFMILL_ENGINE_URL + PDFMILL_API_KE
 			binaryPropertyName: 'data',
 			options: {},
 		});
-		const [out] = (await new GeneratePdf().execute.call(ctx)) as INodeExecutionData[][];
+		const [out] = (await new Pdfmill().execute.call(ctx)) as INodeExecutionData[][];
 		const bytes = Buffer.from(out[0].binary!.data.data, 'base64');
 		expect(bytes.subarray(0, 4).toString('hex')).toBe('89504e47'); // PNG magic
 	});
 
 	it('loadOptions lists the account templates from the live engine (incl. invoice)', async () => {
-		const options = (await new GeneratePdf().methods.loadOptions.getTemplates.call(
+		const options = (await new Pdfmill().methods.loadOptions.getTemplates.call(
 			loadCtx(),
 		)) as INodePropertyOptions[];
 		expect(options.some((o) => o.value === 'invoice')).toBe(true);

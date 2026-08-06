@@ -1,7 +1,7 @@
-# n8n-nodes-generate-pdf
+# n8n-nodes-pdfmill
 
-[![npm version](https://img.shields.io/npm/v/n8n-nodes-generate-pdf?logo=npm&color=cb3837)](https://www.npmjs.com/package/n8n-nodes-generate-pdf)
-[![npm downloads](https://img.shields.io/npm/dw/n8n-nodes-generate-pdf?logo=npm&color=cb3837)](https://www.npmjs.com/package/n8n-nodes-generate-pdf)
+[![npm version](https://img.shields.io/npm/v/n8n-nodes-pdfmill?logo=npm&color=cb3837)](https://www.npmjs.com/package/n8n-nodes-pdfmill)
+[![npm downloads](https://img.shields.io/npm/dw/n8n-nodes-pdfmill?logo=npm&color=cb3837)](https://www.npmjs.com/package/n8n-nodes-pdfmill)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
 
 Generate branded **PDF** and **PNG** documents from an n8n workflow — invoices,
@@ -20,13 +20,13 @@ In n8n (self-hosted or Cloud that allows community nodes):
 **Settings → Community Nodes → Install**, then enter:
 
 ```
-n8n-nodes-generate-pdf
+n8n-nodes-pdfmill
 ```
 
 Or from a shell in your n8n instance:
 
 ```bash
-npm install n8n-nodes-generate-pdf
+npm install n8n-nodes-pdfmill
 ```
 
 ## Credential — “pdfmill API”
@@ -40,7 +40,7 @@ npm install n8n-nodes-generate-pdf
 
 Your key rides n8n's credential system: it is never a node parameter and never logged.
 
-## The node — “Generate PDF”
+## The node — PDFmill
 
 One node, two operations:
 
@@ -72,7 +72,7 @@ variables in the HTML are filled from **Data**.
 
 1. **Manual Trigger** (or a Stripe/webhook trigger in production).
 2. A node that produces the invoice data (a Set/Code node, or your real mapping).
-3. **Generate PDF** → operation *Generate from Template* → template **Invoice** →
+3. **PDFmill** → operation *Generate from Template* → template **Invoice** →
    Data `{{ $json }}` → Format **PDF**.
 4. **Gmail** → *Send* → add a binary attachment from the **data** property.
 
@@ -111,9 +111,9 @@ items in the batch still render.
 
 ```bash
 pnpm install
-pnpm --filter n8n-nodes-generate-pdf run build       # tsc → dist + icons
-pnpm --filter n8n-nodes-generate-pdf run lint         # eslint-plugin-n8n-nodes-base (verification linter)
-pnpm --filter n8n-nodes-generate-pdf run test         # vitest (engine HTTP mocked)
+pnpm --filter n8n-nodes-pdfmill run build       # tsc → dist + icons
+pnpm --filter n8n-nodes-pdfmill run lint         # eslint-plugin-n8n-nodes-base (verification linter)
+pnpm --filter n8n-nodes-pdfmill run test         # vitest (engine HTTP mocked)
 ```
 
 A real node↔engine integration render is gated on env (see
@@ -121,7 +121,7 @@ A real node↔engine integration render is gated on env (see
 
 ```bash
 PDFMILL_ENGINE_URL=http://localhost:8080 PDFMILL_API_KEY=... \
-  pnpm --filter n8n-nodes-generate-pdf run test
+  pnpm --filter n8n-nodes-pdfmill run test
 ```
 
 ## License

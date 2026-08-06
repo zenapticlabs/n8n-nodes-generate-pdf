@@ -38,7 +38,7 @@
       },
       "id": "27-e0278032-ebfd-46be-8b7a-b04701db6d62",
       "name": "Generate packing slip PDF",
-      "type": "n8n-nodes-generate-pdf.generatePdf",
+      "type": "n8n-nodes-pdfmill.pdfmill",
       "typeVersion": 1,
       "position": [
         440,

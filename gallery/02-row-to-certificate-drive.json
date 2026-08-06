@@ -38,7 +38,7 @@
       },
       "id": "09-0c2f5c5f-5ff3-4e31-ba2a-66d64a8d6a07",
       "name": "Generate certificate PDF",
-      "type": "n8n-nodes-generate-pdf.generatePdf",
+      "type": "n8n-nodes-pdfmill.pdfmill",
       "typeVersion": 1,
       "position": [
         440,

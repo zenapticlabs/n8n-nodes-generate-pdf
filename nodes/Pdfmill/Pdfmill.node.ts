@@ -157,17 +157,17 @@ function sanitizeFileBase(label: string): string {
 	return cleaned.length > 0 ? cleaned : 'document';
 }
 
-export class GeneratePdf implements INodeType {
+export class Pdfmill implements INodeType {
 	description: INodeTypeDescription = {
-		displayName: 'Generate PDF',
-		name: 'generatePdf',
+		displayName: 'PDFmill',
+		name: 'pdfmill',
 		icon: { light: 'file:pdfmill.svg', dark: 'file:pdfmill.dark.svg' },
 		group: ['transform'],
 		version: 1,
 		subtitle: '={{ $parameter["operation"] === "template" ? "From Template" : "From HTML" }}',
 		description: 'Generate a branded PDF or PNG from a pdfmill template or raw HTML.',
 		defaults: {
-			name: 'Generate PDF',
+			name: 'PDFmill',
 		},
 		usableAsTool: true,
 		inputs: [NodeConnectionTypes.Main],

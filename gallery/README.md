@@ -1,7 +1,7 @@
 # pdfmill gallery workflows
 
 Ready-to-import n8n workflow templates that showcase the canonical jobs the
-**Generate PDF** node (`n8n-nodes-generate-pdf`) does. These are the
+**PDFmill** node (`n8n-nodes-pdfmill`) does. These are the
 distribution artifact (Constitution Principle I) — authored here, to be
 **submitted to the n8n template gallery at M5** (not submitted yet).
 
