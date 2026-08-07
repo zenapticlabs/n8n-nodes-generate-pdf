@@ -1,0 +1,17 @@
+name: deprecate-old-package
+on:
+  workflow_dispatch:
+jobs:
+  deprecate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+      - name: Deprecate n8n-nodes-generate-pdf -> n8n-nodes-pdfmill
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          npm deprecate n8n-nodes-generate-pdf@"*" \
+            "Renamed to n8n-nodes-pdfmill (same node, verified name). Install n8n-nodes-pdfmill instead: https://www.npmjs.com/package/n8n-nodes-pdfmill"
