@@ -10,7 +10,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const here = dirname(fileURLToPath(import.meta.url));
-const PDFMILL_TYPE = 'n8n-nodes-generate-pdf.generatePdf';
+const PDFMILL_TYPE = 'n8n-nodes-pdfmill.pdfmill';
 const files = readdirSync(here).filter((f) => f.endsWith('.json'));
 
 if (files.length < 3) {
@@ -63,7 +63,7 @@ for (const file of files) {
 	}
 
 	const pdf = (wf.nodes ?? []).find((n) => n.type === PDFMILL_TYPE);
-	if (!pdf) fail(file, 'no pdfmill Generate PDF node');
+	if (!pdf) fail(file, 'no pdfmill node');
 	else if (!pdf.parameters?.template && !pdf.parameters?.html)
 		fail(file, 'pdfmill node has neither template nor html');
 	if (!(wf.nodes ?? []).some((n) => n.type === 'n8n-nodes-base.stickyNote'))

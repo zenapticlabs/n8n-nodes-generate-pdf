@@ -18,7 +18,7 @@ const here = dirname(fileURLToPath(import.meta.url));
 const fixture = (id) =>
 	JSON.parse(readFileSync(join(here, '..', '..', 'templates', 'src', id, 'fixture.json'), 'utf8'));
 
-const PDFMILL_TYPE = 'n8n-nodes-generate-pdf.generatePdf';
+const PDFMILL_TYPE = 'n8n-nodes-pdfmill.pdfmill';
 
 let idc = 0;
 const nid = () => `${(idc++).toString().padStart(2, '0')}-${randomUUID()}`;
